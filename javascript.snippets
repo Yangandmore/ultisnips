@@ -1,0 +1,140 @@
+# A valid snippet should starts with:
+#
+#		snippet trigger_word [ "description" [ options ] ]
+#
+# and end with:
+#
+#		endsnippet
+#
+# Snippet options:
+#
+#		b - Beginning of line.
+#		i - In-word expansion.
+#		w - Word boundary.
+#		r - Regular expression
+#		e - Custom context snippet
+#		A - Snippet will be triggered automatically, when condition matches.
+#
+# Basic example:
+#
+#		snippet emitter "emitter properties" b
+#		private readonly ${1} = new Emitter<$2>()
+#		public readonly ${1/^_(.*)/$1/}: Event<$2> = this.$1.event
+#		endsnippet
+#
+# Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
+
+snippet StyleSheet "RN StyleSheet" b
+import { StyleSheet } from 'react-native';
+
+const styles = StyleSheet.create({
+
+});
+
+export default styles;
+endsnippet
+
+snippet flexDirection "主轴方向" b
+flexDirection: '${1:row|row-reverse|column|column-reverse}'
+endsnippet
+
+snippet justifyContent "主轴元素排列顺序" b
+justifyContent: '${1:flex-start|center|flex-end|space-around|space-between}'
+endsnippet
+
+snippet alignItems "交叉元素轴排列顺序" b
+alignItems: '${1:flex-start|center|flex-end|stretch}'
+endsnippet
+
+snippet alignSelf "在父元素的交叉轴排列方向" b
+alignSelf: '${1:auto|flex-start|flex-end|center|stretch}'
+endsnippet
+
+snippet flexWrap "是否换行" b
+flexWrap: '${1:nowrap|wrap}'
+endsnippet
+
+snippet RNComponent "RNComponent初始化" b
+import React from 'react';
+import {
+  View
+} from 'react-native';
+
+class ${1:class} extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    return ();
+  } 
+
+}
+export default $1;
+endsnippet
+
+snippet gdsfp "getDerivedStateFromProps" b
+static getDerivedStateFromProps(nextProps, prevState) {
+  let res = {}
+  return res;
+}
+endsnippet
+
+snippet gsbu "getSnapshotBeforeUpdate" b
+getSnapshotBeforeUpdate(prevProps, prevState){
+  return null;
+}
+endsnippet
+
+snippet reducer "redux-reducer" b
+import { createReducer } from 'redux-act-reducer';
+import { fromJS } from 'immutable';
+
+const defaultState = fromJS({
+});
+
+const ${1:class} = createReducer({}, defaultState);
+
+export default $1;
+endsnippet
+
+snippet reducerItem "reducer单个" b
+[${1:name}](state, action) {
+  return {
+    REQUEST() {
+      return state.merge(fromJS({
+        
+      }));
+    },
+    SUCCESS() {
+      return state.merge(fromJS({
+        
+      }));
+    },
+    FAILURE() {
+      return state.merge(fromJS({
+        
+      }));
+    }
+  };
+}
+endsnippet
+
+snippet reactReduxApi "react-redux-api模版" b
+const ${1:funName} = async (param, dispatch, getState) => {
+  try {
+    const res = await ${2:api}
+    return Promise.resolve(res);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+endsnippet
+
+snippet => "箭头函数" b
+() => {}
+endsnippet	
+
+
+

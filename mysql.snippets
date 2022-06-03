@@ -1,0 +1,548 @@
+# A valid snippet should starts with:
+#
+#		snippet trigger_word [ "description" [ options ] ]
+#
+# and end with:
+#
+#		endsnippet
+#
+# Snippet options:
+#
+#		b - Beginning of line.
+#		i - In-word expansion.
+#		w - Word boundary.
+#		r - Regular expression
+#		e - Custom context snippet
+#		A - Snippet will be triggered automatically, when condition matches.
+#
+# Basic example:
+#
+#		snippet emitter "emitter properties" b
+#		private readonly ${1} = new Emitter<$2>()
+#		public readonly ${1/^_(.*)/$1/}: Event<$2> = this.$1.event
+#		endsnippet
+#
+# Online reference: https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt
+
+snippet use "use语法" b
+USE ${1:table_name};
+endsnippet
+
+# show 系列
+snippet show databases "show databases;" b
+show databases;
+endsnippet
+
+snippet show tables "show tables;" b
+show tables;
+endsnippet
+
+snippet show create table... "查看创建语句" b
+show create table ${1:table_name};
+endsnippet
+
+snippet show table struct "查看表结构" b
+desc ${1:table_name};
+endsnippet
+
+snippet this database "当前所在数据库名称" b
+select database();
+endsnippet
+
+snippet this version "当前数据库版本" b
+select VERSION();
+endsnippet
+
+snippet this user "当前角色账户" b
+select USER();
+endsnippet
+
+snippet md5 "字符串md5返回值" b
+SELECT md5('${1:str}');
+endsnippet
+
+snippet show engines "查看当前mysql支持的存储引擎" b
+SHOW ENGINES;
+endsnippet
+
+snippet show variables "查看系统变量及其值" b
+SHOW VARIABLES ${1:like ''};
+endsnippet
+
+snippet show sqlmode "查看sql mode" b
+select @@sql_mode;
+endsnippet
+
+# 用户系列
+snippet show user "查看用户列表" b
+use mysql;
+select user,host from user;
+endsnippet
+
+snippet create user "创建用户" b
+create user '${1:name}'@'%' identified by '${3:password}';
+endsnippet
+
+snippet change password "修改密码" b
+select password('123321');
+SET PASSWORD FOR '${1:name}'@'%' = PASSWORD('${2:password}');
+endsnippet
+
+snippet delete user 1 "删除用户1" b
+drop user '${1:name}'@'%';
+endsnippet
+
+snippet delete user 2 "删除用户2" b
+use mysql;
+delete from user where user='${1}' and host='${2}';
+flush privileges;
+endsnippet
+
+
+# 授权
+snippet set grant "设置用户权限" b
+grant ${1:all,select,select(user)} ON ${2:*.*} TO '${3:name}'@'${4:host}' ${5:with grant option};
+endsnippet
+
+snippet show grant "查看用户权限" b
+show grants ${1:for 'name'@'host'};
+endsnippet
+
+snippet delete grant "撤销用户权限" b
+revoke ${1:all,select,select(user)} ON ${2:*.*} FROM '${3:name}'@'${4:host}';
+endsnippet
+
+
+# DDL 操作
+snippet create database "创建数据库" b
+create database ${1:if not exists} ${2:db_name};
+endsnippet
+
+snippet delete database "删除数据库" b
+drop databases ${1:if exists} ${2:db_name};
+endsnippet
+
+snippet create table "创建数据表" b
+create table ${1:table_name} (
+	/* item_name type(len) 约束 commit '字段说明' */
+	/* 约束:not null,default value,primary key,foreign key,unique key,auto_increment */
+	${2:item}
+);
+endsnippet
+
+snippet delete table "删除数据表" b
+drop table ${1:if exists} ${2:table_name};
+endsnippet
+
+snippet rename table "修改表名" b
+alter table ${1:old_table} rename to ${2:new_table};
+endsnippet
+
+snippet comment table "注释表信息" b
+alter table ${1:table} comment '${2:message}';
+endsnippet
+
+snippet copy table struct "拷贝表结构" b
+create table ${1:new_table} like ${2:old_table};
+endsnippet
+
+snippet copy table struct+data "拷贝表结构+数据" b
+create table ${1:new_table} as select ${2:*} from ${3:old_table} ${4:where};
+endsnippet
+
+snippet add column "增加列" b
+/* 约束:not null,default value,primary key,foreign key,unique key,auto_increment */
+alter table ${1:table_name} add column ${2:column_name} ${3:type} ${4:约束};
+endsnippet
+
+snippet change column [modify] "修改列,不能修改列名" b
+/* 约束:not null,default value,primary key,foreign key,unique key,auto_increment */
+alter table ${1:table_name} modify column ${2:column_name} ${3:new_type} ${4:约束};
+endsnippet
+
+snippet change column [change] "修改列,可以修列名" b
+/* 约束:not null,default value,primary key,foreign key,unique key,auto_increment */
+alter table ${1:table_name} change column ${2:column_name} ${3:new_column_name} ${4:new_type} ${5:约束};
+endsnippet
+
+snippet delete column "删除列" b
+alter table ${1:table_name} drop column ${2:column_name};
+endsnippet
+
+snippet delete data [clear] "清空表" b
+truncate ${1:table_name};
+endsnippet
+
+
+# DML 操作
+snippet insert data "插入数据" b
+insert into ${1:table_name} ${2:(column_name)} values (${3:value});
+endsnippet
+
+snippet insert datas "批量插入 select 来源数据" b
+insert into ${1:table_name} ${2:(column_name)}
+${3:select *};
+endsnippet
+
+snippet update data "修改数据" b
+update ${1:table_name} set ${3}${4:.column_name} = ${5:value} ${6:where};
+endsnippet
+
+snippet delete data "删除数据" b
+delete ${1:X_table_name} from ${2:table_name} ${1} ${3:where};
+endsnippet
+
+
+# DQL 操作
+snippet select basic "基础查询" b
+select ${1:*} from ${2:table_name};
+endsnippet
+
+snippet select advanced "高级查询" b
+select
+	${1:*}
+from
+	${2:table_name}
+where
+	${3}
+group by
+	${4}
+having
+	${5}
+order by
+	${6}
+limit
+	${7}, ${8}
+;
+endsnippet
+
+snippet select const "常量、函数查询" b
+select ${1}
+endsnippet
+
+snippet op "条件查询运算符: =、<、>、<>、!=、<=>" i
+${1:column_name} ${2:op} ${3:value}
+endsnippet
+
+snippet and "AND 操作符" i
+AND ${1}
+endsnippet
+
+snippet or "OR 操作符" i
+OR ${1}
+endsnippet
+
+snippet like "模糊查询 %:匹配任意一个或多个字符;_:表示匹配任意一个字符"  i
+${1:column_name} like '${2}'
+endsnippet
+
+snippet between "区间查询" i
+${1:column_name} between ${2:min_value} and ${3:max_value}
+endsnippet
+
+snippet in "IN查询" i
+${1:column_name} IN ( ${2:value} )
+endsnippet
+
+snippet not in "NOT IN查询" i
+${1:column_name} NOT IN ( ${2:value} )
+endsnippet
+
+snippet exists "exists 查询" i
+EXISTS ( ${1} )
+endsnippet
+
+snippet not exists "exists 反向查询" i
+NOT EXISTS ( ${1} )
+endsnippet
+
+snippet is null "返回值为空的记录" i
+${1:column_name} IS NULL
+endsnippet
+
+snippet is not null "返回值不为空的记录" i
+${1:column_name} IS NOT NULL
+endsnippet
+
+snippet order "排序查询" i
+ORDER BY ${1:column_name} ${2:[asc|desc]}
+endsnippet
+
+snippet limit "分页查询" i
+LIMIT ${1:offset} ${2:count}
+endsnippet
+
+snippet group "分组查询" i
+GROUP BY ${1}
+${2:HAVING }
+endsnippet
+
+snippet having "分组后查询" i
+HAVING ${1}
+endsnippet
+
+
+# 数值型函数
+snippet abs "返回 x 的绝对值" i
+ABS(${1})
+endsnippet
+
+snippet sqrt "非负数 x 的二次方跟（开方）,负数返回结果为 NULL。" i
+SQRT(${1})
+endsnippet
+
+snippet mod "返回 x 被 y 除后的余数" i
+MOD(${1:x}, ${2:y})
+endsnippet
+
+snippet ceil "向上取整,函数 CEIL(x) 和 CEILING(x) 的意义相同，返回不小于 x 的最小整数值，返回值转化为一个 BIGINT。" i
+CEIL(${1})
+endsnippet
+
+snippet floor "向下取整,返回小于 x 的最大整数值。" i
+FLOOR(${1})
+endsnippet
+
+snippet rand "生成一个0~1之间的随机数" i
+RAND()
+endsnippet
+
+snippet round "返回最接近于参数 x 的整数；ROUND(x,y) 函数对参数x进行四舍五入的操作，返回值保留小数点后面指定的y位。" i
+ROUND(${1:x}${2:, y})
+endsnippet
+
+snippet sign "返回参数的符号，x 的值为负、零和正时返回结果依次为 -1、0 和 1。" i
+SIGN(${1})
+endsnippet
+
+snippet pow "POW(x,y) 函数和 POWER(x,y) 函数用于计算 x 的 y 次方。" i
+POW(${1:x}, ${2:y})
+endsnippet
+
+snippet sin "SIN(x) 返回 x 的正弦值，其中 x 为弧度值。" i
+SIN(${1:x})
+endsnippet
+
+
+# 字符串函数
+snippet length "返回值为字符串的字节长度，使用 uft8（UNICODE 的一种变长字符编码，又称万国码）编码字符集时，一个汉字是 3 个字节，一个数字或字母是一个字节。" i
+LENGTH(${1:str})
+endsnippet
+
+snippet CONCAT "CONCAT(sl，s2，…) 函数返回结果为连接参数产生的字符串，或许有一个或多个参数。 若有任何一个参数为 NULL，则返回值为 NULL。若所有参数均为非二进制字符串，则结果为非二进制字符串。若自变量中含有任一二进制字符串，则结果为一个二进制字符串。" i
+CONCAT(${1:str})
+endsnippet
+
+snippet insert "返回字符串 s1，子字符串起始于 x 位置，并且用 len 个字符长的字符串代替 s2。x的值从1开始，第一个字符的x=1，若 x 超过字符串长度，则返回值为原始字符串。假如 len 的长度大于其他字符串的长度，则从位置 x 开始替换。若任何一个参数为 NULL，则返回值为 NULL。" i
+INSERT(${1:s1}, ${2:offset}, ${3:count}, ${4:sub_s})
+endsnippet
+
+snippet lower "可以将字符串 str 中的字母字符全部转换成小写。" i
+LOWER(${1:str})
+endsnippet
+
+snippet upper "可以将字符串 str 中的字母字符全部转换成大写。" i
+UPPER(${1:str})
+endsnippet
+
+snippet left "从左侧截取字符串" i
+LEFT(${1:str}, ${2:count})
+endsnippet
+
+snippet right "从右侧截取字符串" i
+RIGHT(${1:str}, ${2:count})
+endsnippet
+
+snippet trim "删除字符串两侧空格" i
+TRIM(${1:str})
+endsnippet
+
+snippet replace "字符串替换" i
+REPLACE(${1:str}，${2:old_str}，${3:new_str})
+endsnippet
+
+snippet substr "截取字符串: substr(str,pos),substr(str from pos),substr(str,pos,len),substr(str from pos for len); 也可以对pos使用负值，在这种情况下，子字符串的开头是字符串末尾的pos字符，而不是开头。 在这个函数的任何形式中pos可以使用负值。" i
+SUBSTR(${1:str}, ${2:offset}, ${3:len})
+endsnippet
+
+snippet reverse "可以将字符串 s 反转，返回的字符串的顺序和 s 字符串的顺序相反。" i
+REVERSE(${1:str})
+endsnippet
+
+
+# 日期和时间函数
+snippet current_date "将当前日期按照“YYYY-MM-DD”或“YYYYMMDD”格式的值返回，具体格式根据函数用在字符串或数字语境中而定，返回的date类型。" i
+current_date()
+endsnippet
+
+snippet current_time "将当前日期按照“YYYY-MM-DD”或“YYYYMMDD”格式的值返回，具体格式根据函数用在字符串或数字语境中而定，返回的date类型。" i
+current_time()
+endsnippet
+
+snippet now "返回当前日期和时间值，格式为“YYYY-MM-DD HH：MM：SS”或“YYYYMMDDHHMMSS”，具体格式根据函数用在字符串或数字语境中而定，返回datetime类型。" i
+NOW()
+endsnippet
+
+snippet unix_timestamp "获取UNIX时间戳, 若无参数调用，返回一个无符号整数类型的 UNIX 时间戳（’1970-01-01 00:00:00’GMT之后的秒数）。" i
+UNIX_TIMESTAMP(${1:date})
+endsnippet
+
+snippet from_unixtime "时间戳转日期, 把 UNIX 时间戳转换为普通格式的日期时间值，与 UNIX_TIMESTAMP () 函数互为反函数。" i
+FROM_UNIXTIME(${1:unix}, ${2:format})
+endsnippet
+
+snippet month "返回指定 date 对应的月份，范围为 1～12。" i
+MONTH(${1:date})
+endsnippet
+
+snippet monthname "返回日期 date 对应月份的英文全名。" i
+MONTHNAME(${1:date})
+endsnippet
+
+snippet dayname "DAYNAME(date) 函数返回 date 对应的工作日英文名称，例如 Sunday、Monday 等。" i
+DAYNAME(${1:date})
+endsnippet
+
+snippet dayofweek "DAYOFWEEK(d) 函数返回 d 对应的一周中的索引（位置）。1 表示周日，2 表示周一，……，7 表示周六。这些索引值对应于ODBC标准。" i
+DAYOFWEEK(${1:date})
+endsnippet
+
+snippet week "WEEK(date[,mode]) 函数计算日期 date 是一年中的第几周。WEEK(date,mode) 函数允许指定星期是否起始于周日或周一，以及返回值的范围是否为 0～52 或 1～53。" i
+WEEK(${1:date} ${2:,mode})
+endsnippet
+
+snippet dayofyear "DAYOFYEAR(d) 函数返回 d 是一年中的第几天，范围为 1～366。" i
+DAYOFYEAR(${1:date})
+endsnippet
+
+snippet dayofmonth "DAYOFMONTH(d) 函数返回 d 是一个月中的第几天，范围为 1～31。" i
+DAYOFMONTH(${1:date})
+endsnippet
+
+snippet year "YEAR() 函数可以从指定日期值中来获取年份值。" i
+YEAR(${1:date})
+endsnippet
+
+snippet time_to_sec "TIME_TO_SEC(time) 函数返回将参数 time 转换为秒数的时间值，转换公式为“小时 ×3600+ 分钟 ×60+ 秒”。" i
+TIME_TO_SEC(${1:date})
+endsnippet
+
+snippet sec_to_time "SEC_TO_TIME(seconds) 函数返回将参数 seconds 转换为小时、分钟和秒数的时间值。" i
+SEC_TO_TIME(${1:date}) 
+endsnippet
+
+snippet date_add "DATE_ADD(date,INTERVAL expr type), date：参数是合法的日期表达式。expr 参数是您希望添加的时间间隔。" i
+DATE_ADD(${1:date}, INTERVAL ${2:expr} ${3:type})
+endsnippet
+
+snippet date_sub "DATE_SUB(date,INTERVAL expr type),date：参数是合法的日期表达式。expr 参数是您希望添加的时间间隔。" i
+DATE_SUB(${1:date}, INTERVAL ${2:expr} ${3:type})
+endsnippet
+
+snippet addtime "ADDTIME(time,expr) 函数用于执行时间的加法运算。添加 expr 到 time 并返回结果。time 是一个时间或日期时间表达式，expr 是一个时间表达式。" i
+ADDTIME(${1:date}, ${2:expr})
+endsnippet
+
+snippet subtime "SUBTIME(time,expr) 函数用于执行时间的减法运算。time 是一个时间或日期时间表达式， expr 是一个时间。" i
+SUBTIME(${1:date}, ${2:expr})
+endsnippet
+
+snippet datediff "DATEDIFF(date1，date2) 返回起始时间 date1 和结束时间 date2 之间的天数。date1 和 date2 为日期或 date-and-time 表达式。计算时只用到这些值的日期部分。" i
+DATEDIFF(${1:date}, ${2:date})
+endsnippet
+
+snippet date_format "DATE_FORMAT(date，format) 函数是根据 format 指定的格式显示 date 值。" i
+DATE_FORMAT(${1:date}，${2:format}) 
+endsnippet
+
+snippet weekday "WEEKDAY(date) 返回date的星期索引(0=星期一，1=星期二, ……6= 星期天)。" i
+WEEKDAY(${1:date})
+endsnippet
+
+
+# 聚合函数
+snippet max "max 聚合函数" i
+endsnippet
+max(${1})
+
+snippet min "min 聚合函数" i
+min(${1})
+endsnippet
+
+snippet count "count 聚合函数" i
+count(${1})
+endsnippet
+
+snippet sum "sum 聚合函数" i
+sum(${1})
+endsnippet
+
+snippet avg "avg 聚合函数" i
+avg(${1})
+endsnippet
+
+
+# 流程控制函数
+snippet if "IF(expr,v1,v2)。当 expr 为真是返回 v1 的值，否则返回 v2" i
+IF(${1:expr}, ${2:v1}, ${3:v2})
+endsnippet
+
+snippet ifnot "IFNULL(v1,v2)：v1为空返回v2，否则返回v1。" i
+IFNULL(${1:v1}, ${2:v2})
+endsnippet
+
+snippet case "搜索语句, 搜索项使用 when" i
+CASE ${1:[expr]}
+  ${2}
+	ELSE ${3:exe}
+END CASE;
+endsnippet
+
+snippet when "搜索项" i
+WHEN ${1:data|expr} THEN ${2:exe}
+endsnippet
+
+
+snippet as "自定义命名" i
+AS '${1:name}'
+endsnippet
+
+snippet where "" i
+WHERE ${1:expr}
+endsnippet
+
+# 连接查询
+snippet join "连接表" i
+JOIN ${1:table_name}
+endsnippet
+
+snippet on "连接条件" i
+ON ${1:expr}
+endsnippet
+
+snippet left "左连接" i
+LEFT JOIN ${1:slave_table_name}
+endsnippet
+
+snippet right "右连接" i
+RIGHT JOIN ${1:master_table_name}
+endsnippet
+
+
+# 其他关键字
+snippet distinct "去重关键字, 放在 select 后面" i
+DISTINCT
+endsnippet
+
+snippet all "ALL 关键字，主表需要满足从表中每一项才返回true" i
+ALL ( ${1:expr} )
+endsnippet
+
+snippet some "SOME 关键字，主表只需要满足从表中任意一项就返回true" i
+SOME ( ${1:expr} )
+endsnippet
+
+snippet any "ANY 关键字，主表只需要满足从表中任意一项就返回true" i
+ANY ( ${1:expr} )
+endsnippet
+
