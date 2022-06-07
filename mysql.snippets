@@ -33,7 +33,7 @@ snippet show databases "show databases;" b
 show databases;
 endsnippet
 
-snippet show tables "show tables;" b
+snippet show tables "show tables/views;" b
 show tables;
 endsnippet
 
@@ -41,8 +41,8 @@ snippet show create table... "查看创建语句" b
 show create table ${1:table_name};
 endsnippet
 
-snippet show table struct "查看表结构" b
-desc ${1:table_name};
+snippet show table struct "查看表/视图结构" b
+DESC ${1:table_name};
 endsnippet
 
 snippet this database "当前所在数据库名称" b
@@ -546,3 +546,42 @@ snippet any "ANY 关键字，主表只需要满足从表中任意一项就返回
 ANY ( ${1:expr} )
 endsnippet
 
+
+# 事务处理
+snippet start transaction "开启事物" b
+START TRANSACTION ${1:read only};
+endsnippet
+
+snippet commit "提交事务" b
+COMMIT;
+endsnippet
+
+snippet rollback "回滚事务" b
+ROLLBACK;
+endsnippet
+
+snippet savepoint "事务保存点" b
+SAVEPOINT ${1:name};
+endsnippet
+
+
+# 视图处理
+snippet create view "创建视图" b
+CREATE VIEW ${1:view_name} AS ${2:select_statement};
+endsnippet
+
+snippet update view [1] "修改视图1" b
+CREATE OR REPLACE VIEW ${1:view_name} AS ${2:select_statement};
+endsnippet
+
+snippet update view [2] "修改视图2" b
+AlTER VIEW ${1:view_name} AS ${2:select_statement};
+endsnippet
+
+snippet delete view "删除视图" b
+DROP VIEW ${1:view_name};
+endsnippet
+
+snippet show view struct "查询视图结构" b
+SHOW CREATE VIEW ${1:view_name};
+endsnippet
